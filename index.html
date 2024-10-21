@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рандомное число</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: var(--tg-theme-text-color);
+            background: var(--tg-theme-bg-color);
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #randomNumber {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        #userData {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: left;
+        }
+        /* Адаптация для мобильных устройств */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 20px;
+            }
+            button {
+                font-size: 16px;
+                padding: 8px 16px;
+            }
+            #randomNumber {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Нажми на кнопку для рандомного числа</h1>
+    <button onclick="generateRandomNumber()">Сгенерировать</button>
+    <div id="randomNumber"></div>
+    <div id="userData"></div>
+</div>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+    function generateRandomNumber() {
+        var randomNumber = Math.floor(Math.random() * 100) + 1;
+        document.getElementById('randomNumber').textContent = "Рандомное число: " + randomNumber;
+    }
+
+    // Инициализация Telegram Web Apps SDK
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+
+    // Получение данных пользователя
+    const user = tg.initDataUnsafe.user;
+    if (user) {
+        const userDataDiv = document.getElementById('userData');
+        const platform = tg.platform;
+        const language = tg.initDataUnsafe.language_code;
+        const timezone = new Date().toLocaleTimeString('ru-RU', { timeZoneName: 'short' }).split(' ')[2];
+        
+        userDataDiv.innerHTML = `
+            <h3>Информация о пользователе:</h3>
+            <p><strong>ID:</strong> ${user.id}</p>
+            <p><strong>Имя и фамилия:</strong> ${user.first_name} ${user.last_name || ''}</p>
+            <p><strong>Username:</strong> ${user.username || 'Нет username'}</p>
+            <p><strong>Язык интерфейса:</strong> ${language}</p>
+            <p><strong>Платформа:</strong> ${platform}</p>
+            <p><strong>Часовой пояс:</strong> ${timezone}</p>
+        `;
+    } else {
+        document.getElementById('userData').textContent = 'Не удалось получить данные пользователя';
+    }
+</script>
+
+</body>
+</html>
